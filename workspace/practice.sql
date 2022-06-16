@@ -1,1 +1,0 @@
-select 20 from deptno from emp;

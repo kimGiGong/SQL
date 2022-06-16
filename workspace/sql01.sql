@@ -44,3 +44,14 @@ select distinct deptno,ename from emp; -- 중복 제거 + (해당되는 컬럼전체를 기준�
 
 
 
+
+
+
+
+
+
+
+
+
+
+
