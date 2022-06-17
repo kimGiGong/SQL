@@ -1,0 +1,435 @@
+[SQL]
+
+# 학원 공용 오라클 DB 사용 #
+192.168.100.250
+본인 ID PW : java04
+
+1) 본인 학원 PC의 IP 주소가 192.168.100.XX 맞는지 확인
+
+	-> 192.168.1.xx 1번대를 사용중인 PC는 100번대로 변경해야함.
+
+	1) DB IDE툴 다운/설치 SQL Developer
+		운영체제에 맞는 버전으로 (JDK 미포함 버전) 다운
+		설치는 압축해제
+
+	2) SQL Developer 사용자 계정 세팅
+		[ 학원 공용 DB]
+		Name: 사용자 접속자 이름 (원하는 이름으로)
+		사용자이름: 부여된 본인 계정 (ex. java04)
+		비밀번호 : 사용자이름과 동일
+		호스트이름 : 192.168.100.250
+		Port 포트 : 1521 (defaulte)
+		SID : ORCL
+		
+		[ 집에서 본인 PC에 설치한 DB : 관리자 계정 버전 ]
+		Name: 사용자 접속자 이름 (원하는 이름으로)
+		사용자이름: system
+		비밀번호 : DB설치시 정한 비번
+		호스트이름 : localhost		(설치된 PC일 경우)
+		Port 포트 : 1521 (default)
+		SID : ORCL		(작업관리자>서비스>OracleService....ORCL 확인)
+
+		
+
+1. 데이터베이스
+	1) DBMS : DataBase Management System : 데이터베이스 관리하는 시스템
+		oracle, MySQL, MariaDB, MongoDB 등등
+		
+	2) 데이터베이스 : 유용한 데이터의 집합 
+		데이터베이스의 주된 목적은 파일을 저장하는것이 아니라
+		파일의 이름이나 위치등을 저장하는것.
+
+	3) 파일시스템의 문제점
+		일관성 : 파일이름은 같은데 내용이 다르거나 내용은 같은데 이름이 다른것들 정리가 어렵다.
+		보안성 : 파일로 만들 데이터가 보안유지가 어렵다.
+		경제성 : 용량 많이 차지
+		무결성 : 백업시킬때 동기화가 어려움
+
+	4) DBMS로 오라클을 사용
+
+		8, 9 vers. -> I : internet의 i
+		10,11 vers. -> G : grid의 g
+		12, 13 ....19 vers. -> C : cloud의 c
+
+	5) 오라클 데이터베이스는 관계형데이터베이스(Relational DataBase : RDBMS)로
+		테이블(표)의 형태로 데이터를 저장한다.
+		
+		ex) 회원가입
+		column 		: 회원 정보 목록(타이틀)
+		row (레코드) 	: 한명 가입시 레코드 한줄 추가
+		
+		수정은 컬럼단위, 삭제는 레코드 삭제
+
+2. SQL  : Structured Query Language : 구조화 질의어
+	데이터베이스를 사용할 때, 데이터베이스에 접근할 수 있는 데이터베이스 하부 언어를 말함
+	
+	1) SQL 종류
+			
+	DDL (Data Definition Language) : 데이터 정의어
+		데이터베이스 객체 (테이블, 뷰, 인덱스....)의 구조 정의
+		
+		CREATE		: 생성	
+		ALTER		: 변경
+		DROP		: 삭제
+		RENAME		: 이름 변경
+		TRUNCATE	: 삭제(저장공간 삭제)
+
+	DML (Data Manipulation Language) : 데이터 조작어
+		데이터의 삽입, 삭제, 갱신 등 데이터 처리
+
+		INSERT 		: 데이터 저장(입력)
+		DELETE		: 데이터 삭제
+		UPDATE		: 데이터 수정
+		
+	      DQL	SELECT		: 데이터 검색
+
+		
+	DCL (Data Control Language) : 데이터 제어어
+		데이터베이스 사용자의 권한을 제어하는 명령어 
+		(관리자 권한 없는 사용자는 아래 명령어 실행 불가. DBA는 가능
+		DB설치시 최고 관리자 자동 생성되는 사용자이름은 system, 비번은 설치시 정한 번호)
+
+		GRANT		: 권한 부여
+		REVOKE		: 권한 취소
+
+	   TCL (Transaction Control Language) : 트랙젝션 제어어
+		트랜젝션(데이터 처리 단위) 관련 제어함.
+		
+		COMMIT 		: 트랜젝션 정상 종료 처리
+				- 자동 commit : DDL(create, alter, drop), DCL(grant, revoke),
+					웹에서 (자바)에서 실행시킨 명령 
+
+		ROLLBACK	:작업 취소 (되돌리기)
+				- 자동 rollback : 비정상적인 종료, system failure
+ 
+		SAVEPOINT	: 백업 정책
+		
+		
+3. 테이블
+	: 데이터 베이스의 기본적인 데이터 저장 단위
+	행, 열의 구조로 데이터가 저장됨.
+	
+	열(column, 컬럼)	: 속성, 여러개의 열이 한 행의 속성값들을 저장함.
+	행 (row, 레코드)	: 데이터가 저장되는 곳.
+
+4. 테이블 생성 : CREATE
+	
+	CREATE TABLE [테이블명] (
+		컬럼명 컬럼데이터타입 (옵션),
+		컬럼명 컬럼데이터타입 (옵션), .......
+	);
+
+	* SQL 명령 끝날때 세미콜론( ; )
+	* 테이블 생성 시, 각 컬럼은 쉼표( , )로 구분
+	* 테이블 생성 시, 데이터 타입 반드시 기술
+
+	* 데이터 타입
+		문자 : carchar2(글자길이값)	: 가변길이 문자저장 형태. 4000자까지 (한글은 2000자) 
+			varchar(), char() 등 다양한 것이 있다
+		숫자 : number	: 정수 실수 모두 포함. 38자리
+		날짜 : date 
+		
+	* 옵션 : 제약조건 Constaint 
+		: 부적절한 데이터가 입력되는것을 방지하기 위한 여러가지 규칙을 적용해 놓는 것
+
+		NOT NULL	:  null값이 들어올 수 없다.
+		UNIQUE		: 중복된 데이터를 저장할 수 없다
+    *****(매우중요)	PRIMARY KEY	: not null + unique
+				테이블에 한개의  컬럼에만 지정 가능.
+				레코드를 구분짓는 기준임. 
+		FOREIGN KEY	: 두개 테이블을 연결시킬때,
+				다른테이블의 프라이머리키가 되는, 현재테이블의 컬럼
+		DEFAULT		: default값 지정하는 옵션.
+		CHECK		: 조건 체크 등 검사하고 데이터 저장되도록.
+
+	* 테이블 생성시 주의 사항
+		- 테이블 이름과 컬럼은 항상 알파벳문자로 시작
+			A~Z, 0~9 $ # _ 사용가능, 공백X, 
+		- 컬럼명에 예약어 사용 불가
+		- 한 계정에서 테이블명 중복불가
+		- 한 테이블 안에서 컬럼이름은 같으면 안되지만,
+			다른 테이블의 컬럼이름과는 같을 수 있다.
+	
+5. 테이블 검색 : SELECT
+	**  SQL은 띄어쓰기 매우중요
+	
+	[ 기본 구조 ]
+	SELECT 컬럼명또는표현식 FROM 테이블명;
+
+	1) 전체 레코드 검색
+		: * = 모든~
+
+		SELECT * FROM 테이블명;			select * from test;
+
+	2) 특정 컬럼만 검색
+
+		SELECT 컬럼명,컬럼명,........ FROM 테이블명;	select id,pw from test;
+
+	3) 검색 옵션 지정
+		
+		* ALL		: default 옵션 (생략가능)
+		* DISTINCT	: 중복된 데이터가 있는 경우 1건으로 처리해서 출력
+
+6. 레코드 추가 : INSERT
+	
+	#1. 모든 컬럼에 데이터 추가
+		INSERT INTO 테이블명( 컬럼명, .... ) VALUES( 값, 값 , .....);
+		* 모든 컬럼에 데이터를 추가할때,
+		테이블명 뒤에 컬럼명 생략가능하고
+		컬럼명 생략시, 저장할 값들은 테이블 컬럼 순서에 맞게 작성.
+
+	#2. 원하는 컬럼만 데이터 추가
+
+		INSERT INTO 테이블명( 컬럼명, ....) VALUES( 값, 값 , .....);
+
+
+7. 레코드 수정 : UPDATE
+
+	#1. 일괄 수정
+
+		UPDATE 테이블명 SET 컬럼명=값, 컬럼명=값, ....;
+
+	#2. 조건에 의한 특정 레코드 수정
+
+		UPDATE 테이블명 SET 컬럼명=값, 컬럼명=값, .... 
+		WHERE 조건식;
+
+8. 레코드 삭제 : DELETE
+	
+	#1. 전체 레코드 삭제 : 테이블은 그래로 존재, 안의 레코드만 삭제
+
+		DELETE FROM 테이블명;		(레코드가 저장되었던 공간은 유자지
+
+		TRUNCATE TABLE  테이블명;		( 저장 공간도 해제 , 롤백X)
+
+	#2. 특정 레코드 삭제 : where절로 조건 걸어서 삭제
+
+		DELETE FROM 테이블명 WHERE 조건식;
+
+9. 테이블 정보 수정 : ALTER
+	: 컬럼명 수정, 컬럼 추가등
+	
+	1) 컬럼 추가 ㅣ ALTER - ADD
+		
+		ALTER TABLE 테이블명 ADD( 컬럼명 타입 옵션 );
+
+		* 컬럼과 컬럼사이에 추가불가, 항상 뒤에 추가
+		* 테이블에 이미 레코드가 들어가 있을때 추가시, 
+		  	추가 컬럼에 NOT NULL 옵션을 줄수 없다.
+
+	2) 컬럼 타입/옵션 변경 : ALTER - MODIFY
+	
+		ALTER TABLE 테이블명 MODIFY ( 컬럼명 테이터타입 옵션 );
+		
+		* 해당 컬럼의 크기를 늘리수는 있지만 줄이지는 못함 (기본 데이터 훼손 우려
+		varchar(50) = varchar(100) ok
+		varchar(100) = varchar(50) no
+		* 해당 컬럼의 NULL 값만 가지고 있거나 테이블에 아무 레코드도 없으면
+			칼럼의 폭을 줄일 수 있다.
+		* 해당 컬럼의 NULL 값만 가지고 있으면 데이터 유형을 변경할 수 도 있다.
+		* 해당 컬럼의 DEFAULT값을 바꾸면, 이후 발생하는 레코드 삽입에만 영향을 미치게됨.
+		* 해당 컬럼의 NULL 값이 없을 경우에만 NOT NULL 제약조건 추가능
+
+	3) 컬럼 이름 변경 : ALTER - RENAME
+
+		 ALETER TABLE 테이블명 RENAME COLUMN 구컬럼명 TO 새컬럼명;
+
+	4) 컬럼 삭제 : ALTER - DROP
+		
+		ALTER TABLE 테이블명 DROP COLUMN 컬럼명;
+	
+		* 한번에 한개의 컬럼만 삭제가능,
+			삭제후 테이블에 한개 이상의 컬럼이 남아 있어야함.
+		* 삭제되면, 복구 불가능
+	
+10. 테이블 삭제 : DROP
+	: 테이블 자체를 삭제
+
+	DROP TABLE 테이블명;
+
+	DROP TABLE : 레코드 삭제 O, 테이블 구조 삭제 O
+	DELETE TABLE : 레코드 삭제 O (점유공간 유지), 테이블 구조 삭제 X
+	TRUNCATE TABLE : 레코드 삭제 O (점유공간삭제) , 테이블 구조 삭제 X
+
+11. 별칭(예명) : ALIAS
+	: 조회된 결과에 일종의 별명(ALIAS, ALIASES) 을 부여해서 컬럼 레이블을 변경 할 수 있다.
+	실제 테이블의 컬럼명이 변경되는 것은 아니고, 검색시 예명으로 표기.
+
+	SELECT 컬럼명 별칭, 컬럼명 AS 별칭 ..... FROM 테이블명;
+
+	* 컬럼명 또는 테이블명 바로 뒤에 기술
+	* 컬럼명과 별칭 사이에 AS 키워드를 사용할 수도 있다.
+	* 별칭에 공백이나 특수문자, 대소문자구분된 문자가 포함되면 ""(겹따옴표) 로 묶어서 작성
+	* 현재 실행되는 SELECT 문장에서만 유효
+	* 테이블에 별칭을 기술하면 , SELECT 컬럼작성 부분에서 테이블명 대신 사용가능.
+
+12. 산술 연산자
+	: 산술연산자는 number, date 자료형에 대해 적용
+
+		* / + - 
+
+	* 일반적으로 산술연산을 사용하거나 특정함수를 적용하게되면
+	컬럼의 라벨이 길어지게 되어 별칭을 새롭게 부여하는 것이 좋다 
+
+13. 집계함수 
+	: 여러행 또는 테이블 전체 행으로부터 하나의 결과값을 리턴하는 함수
+
+	COUNT()	: 검색된 레코드 수 리턴
+	MAX()	: 컬럼에서 최대값 리턴
+	MIN()	: 컬럼에서 최소값 리턴
+	AVG()	: 컬럼의 평균값 리턴
+	SUM()	: 컬럼의 총합 리턴
+
+	* GROUP BY 절 이용하여 그룹당 하나의 결과로 그룹화 할 수있다.
+	* HAVING 절의 사용하여 집계함수를 이용한 조건 비교를 할 수 있다.
+	* MIN, MAX 함수는 모든 자료형에 사용 할 수 있다.
+
+14. WHERE 절
+	: 조건을 지정해서 원하는 결과가 실행되게 만드는 문법
+
+	SELECT 컬럼명 FROM 테이블명 WHERE 조건식;
+
+	* from 절 뒤에 위치
+
+	1) 조건식 연산자
+		#1. 비교 연산자 : = != < <= > >=
+		#2. 논리 연산자 : and or not
+		#3. SQL 연산자
+			1. BETWEEN a and b	: a와 b값 사이 (a,b 포함)
+			    NOT BETWEEN a AND b
+			
+			SELECT * FROM 테이블명 WHERE 컬럼명 BETWEEN 값 AND 값;
+
+			2. IN(리스트)	: 리스트에 있는 어느값이 하나라도 일치하면
+			    NOT IN(리스트)
+
+				SELECT 컬럼명 테이블명 WHERE 컬럼명 IN(리스트);
+
+			3. LIKE '비교문자열'	: 비교문자열과 형태가 일치하면 
+			    NOT LIKE '비교문자열'			
+		
+				SELECT 컬럼명 FROM 테이블명 WHERE 컬럼명 LIKE '비교문자열';
+
+			4. IS NULL 	: NULL 값일 때		age is null
+			    IS NOT NULL  				age is not null
+		
+				SELECT 컬럼명 FROM 테이블명 WHERE 컴럼명 IS NULL;
+
+15. 정렬 : ORDER BY
+	데이터 정렬을 위해 사용
+	특정 컬럼을 기준으로 정렬하여 검색하는데 사용
+
+	ORDER BY 컬럼명 ASC|DESC
+		ASC : 오름차순 (default)
+		DESC : 내림차순
+
+	SELECT 컬럼명 FROM 테이블명 WHERE 조건식 ORDER BY 컬럼명 옵션;
+
+	* SQL 문장의 마지막 부분에 기술
+	* 컬럼명 대신 SELECT 절에서 사용한 ALIAS나 컬럼 순서를 나타내는 숫자 사용가능
+	* 컬럼에 저장된 값이 NULL 인경우 마지막 쪽에 정렬됨
+
+16. SQL 함수
+	1) 문자 관련 함수
+		LOWER ( '문자' )	: 전부 소문자로 변환
+		UPPER ( '문자' ) 	: 전부 대문자로 변환
+		CONCAT( '문자' , '문자' ) : 문자 연결
+		SUBSTR( '문자' , idx , 갯수 ) : 문자를 idx부터 갯수만큼 추출 ( idx 부터 시작 )
+		LPAD( 'orginal문자' , length , '삽입문자' ) 
+			: original 문자의 왼쪽 부분에 length의 길이가 될때까지 삽입문자를 추가해줌
+			( 'hello', 10 , ' * ' ) --> *****hello
+		RAPD( 'orginal문자' , length , '삽입문자' ) 
+			: original 문자의 오른쪽 부분에 length의 길이가 될때까지 삽입문자를 추가해줌
+			( 'hello', 10 , ' * ' ) --> hello*****
+
+	2) 숫자 관련 함수
+		ROUND( 숫자, 소수점수 )	: 소수점 자리수에서 반올림
+		TRUNC ( 숫자 , 소수점수 )	: 소수점 자리수까지 유지하고 뒤는 버림
+		MOD ( 숫자1 , 숫자2 )	: 숫자1 % 숫자2
+		CEIL( 숫자 )		: 올림
+		PLOOR( 숫자 )		: 내림
+		POWER( 숫자1 , 숫자2 )	: 숫자1의 숫자2승 ( 2 , 3 ) 2의 3제곱 ->8
+
+	3) 날짜 관련 함수
+		#날짜계산
+		날짜 + 숫자 = 날짜 		7/20 + 3 	=> 7/23
+		날짜 - 숫자 = 날짜		7/20 - 3 	=> 7/17
+		날짜 - 날짜 = 숫자 		7/20 - 7/15 => 5 
+
+		# 날짜 함수
+		SYSDATE 				: 시스템 현재 날짜와 시간
+		MONTH_BETWEEN(날짜, 날짜)	 	: 두 날짜 사이 개월수
+		ADD_MONTH (날짜, 숫자)		: 날짜에 개월숫자 더하기
+		NEXT_DAY(날짜, 요일		: 날짜를 기준으로 돌아오는 요일의 날짜
+		LAST_DAY(날짜)			: 주어진 날짜가 속한 달의 마지막 날짜
+		ROUND(날짜)			: 주어진 날짜 반올림 : 정오 낮 12시 기준으로
+		TRUNC(날짜)			: 주어진 날짜 버림 : 그날
+
+	4) 형변환 함수
+		TO_CHAR(숫자)			: 숫자-> 문자 , 날짜 -> 문자
+			* 날짜를 표현하는 방법
+			    연도 	YYYY , RRRR , YY , RR , YEAR
+				
+		TO_NUMBER( '문자' )		: 문자 -> 숫자
+		TO_DATE( '날짜형태문자' , '패턴' )	: 문자 -> 날짜
+
+
+17. 서브 쿼리
+	: 쿼리문 안에 다시 쿼리문을 작성하는 형태
+
+	SELECT 컬럼 FROM ( 서브쿼리문 ( 서브쿼리문 ( 서브쿼리문 ( .... ) ) ) );
+
+	SELECT 컬럼명 FROM (SELECT 컬럼명 FROM  테이블명);
+
+18. 조인 : JOIN
+	: 둘 이상의 테이블을 연결하여 테이터를 검색하는 방법
+	두 테이블에 적어도 한개의 컬럼은 서로 공유하는 형태여야 가능
+
+	1) Equi Join : 등가 조인
+
+19.  그룹 group by
+	데이터를 원하는 그룹으로 나눌 수 있다.
+	나누고자하는 그룹의 컬럼명을 SELECT절과 GROUP BY절 뒤에 추가
+	
+20. Having
+	WHERE 절에서는 집계함수를 사용할 수없다.
+	HAVING 절은 집계함수를 가지고 조건비교를 할 때 사용한다.
+	HAVING 절은 GROUP BY  절과 함께 사용이 된다.
+
+21 시퀀스 SEQUENCE
+	: 유일(unique)한 값을 생성해주는 오라클 객체
+	시퀀스를 생성하면 기본키와 순차적으로 증가하는 컬럼을 
+	자동적으로 생성/활용 할 수 있다
+	->number 타입의 Primary Key 값으로 많이 사용한다.
+	시퀀스는 테이블과는 독립적으로 저장되고 생성된다.
+
+	1) 시퀀스 생성
+	
+		CREATE SEQUENCE 시퀀스명
+		START WITH n
+		INCREMENT BY n
+		MAXVALUE n | NOMAXVALUE
+		MINVALUE n  | NOMINVALUE
+		CYCLE | NOCYCLE
+		CACHE | NOCACHE
+		;
+
+		START WITH n 	: 시퀀스의 시작값 지정.
+		INCREMENT BY n 	: 시퀀스의 증가값을 지정.
+		MAXVALUE n 	: 시퀀스 최대값 지정
+		MINVALUE n 	: 시퀀스 최소값
+		CYCLE | NOCYCLE 	: 최대값 도달시 순환 여부 ( default = nocycle )
+		CACHE | NOCACHE	: CACHE 여부, ( default = cache )
+
+	2) 시퀀스 조회
+		select 조회 -> 테이블이 없다 -> dual 테이블에서
+	3) 시퀀스 삭제
+		DROP SEQUENCE 시퀀스명;
+
+	
+
+
+
+
+
+
