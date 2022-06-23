@@ -1,3 +1,5 @@
+select * from test;
+
 -- ¼­ºêÄõ¸®
 select * from (select empno,ename, job,sal  
     from emp) 
