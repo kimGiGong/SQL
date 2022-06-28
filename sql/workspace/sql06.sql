@@ -63,9 +63,25 @@ select B.* from
 where r >= 11
 and r <= 20;
 
+select * from board;
 
+commit;
 
+-- ´ñ±Û Å×ÀÌºí
+create table replyBoard(
+    replyNum number primary key,
+    reply varchar2(600) not null,
+    replyer varchar2(100),
+    replyReg date default sysdate,
+    boardNum number not null,
+    replyGrp number,
+    replyLevel number,
+    replyStep number
+);
+select * from replyboard;
+commit;
 
+create sequence reply_seq nocache;
 
 
 
