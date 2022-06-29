@@ -83,6 +83,31 @@ commit;
 
 create sequence reply_seq nocache;
 
+(select rownum r, A.* from
+(select * from replyBoard 
+where boardnum=22 
+order by replyGrp desc, replyStep asc)A)
+order by replyGrp desc, replyStep asc)B
+;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

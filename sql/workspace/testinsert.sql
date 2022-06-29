@@ -8,3 +8,7 @@ create table testinsert (
 );
 
 select * from testinsert;
+
+select * from tboard where boardno=12;
+
+update tboard set subject=? ,content=? where boardno=? and pw=?
