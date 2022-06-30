@@ -21,9 +21,9 @@ create table tcomment (
     commentno number primary key,
     commentName varchar2(100),
     commentreg date default sysdate,
-    addcommentno default 0,
-    addlevel default 0,
-    
+    addcommentno number default 0,
+    addlevel number default 0,
+    addStep number default 0
 );
 create sequence tcomment_seq;
 

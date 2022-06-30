@@ -91,7 +91,25 @@ order by replyGrp desc, replyStep asc)B
 ;
 
 
+--  파일 업로드 테스트용 테이블
+create table uploadImg(
+    writer varchar2(100),
+    upload varchar2(100)
+);
+select * from uploadimg;
+desc uploadimg;
 
+-- 이미지 회원가입
+create table imgSignup(
+    id varchar2(100) primary key,
+    pw varchar2(100) not null,
+    name varchar2(30) not null,
+    gender varchar2(20),
+    email varchar2(100),
+    photo varchar2(100),
+    reg date default sysdate
+);
+select * from imgsignup;
 
 
 
