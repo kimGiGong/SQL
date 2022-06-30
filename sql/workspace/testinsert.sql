@@ -11,4 +11,19 @@ select * from testinsert;
 
 select * from tboard where boardno=12;
 
-update tboard set subject=? ,content=? where boardno=? and pw=?
+update tboard set subject=? ,content=? where boardno=? and pw=?;
+
+select readcount from tboard where boardno=8;
+
+update tboard set readcount=1 where boardno=8;
+
+create table tcomment (
+    commentno number primary key,
+    commentName varchar2(100),
+    commentreg date default sysdate,
+    addcommentno default 0,
+    addlevel default 0,
+    
+);
+create sequence tcomment_seq;
+
