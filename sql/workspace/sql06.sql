@@ -148,6 +148,26 @@ create sequence imgreply_seq nocache;
 select * from imgreply;
 desc imgreply;
 
+-- 작성자, 내용
+--  sel = 작성자(writer) ,search='123' 작성자가 java인 사람 검색 
+select * from imgboard where writer like '%123%';
+select count(*) from imgboard where writer like '%123%';
+-- 내용에 456 들어간것 검색 : sel = content , search = '456'
+select * from imgboard where content like '%45%';
+select count(*) from imgboard where content like '%45%';
+select count(*) from imgboard where writer like '%java%';
+
+select B.* from 
+(select rownum r , A.* from
+(select * from imgboard where content like'%h%' order by reg desc) A) B
+where r>=1 and r<=10;
+
+
+
+
+
+
+
 
 
 

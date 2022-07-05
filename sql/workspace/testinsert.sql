@@ -50,5 +50,5 @@ create table tcontentboard (
     reg date default sysdate
 );
 create sequence tcontentboard_seq;
-
-select B.* from(select rownum r, A.* from (select * from tcontentboard order by bno desc) )A )B where r>=1 and r<=10;
+select count(*) from tcontentboard;
+select B.* from(select rownum r, A.* from (select * from tcontentboard order by bno desc) A) B where r>=1 and r<=10;
