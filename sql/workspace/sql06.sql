@@ -111,12 +111,42 @@ create table imgSignup(
 );
 select * from imgsignup;
 
+select photo from imgSignup where id='test';
 
 
 
+-- 이미지 게시판
+create table imgBoard(
+    bno number primary key,
+    writer varchar2(100),
+    subject varchar2(200),
+    content varchar2(4000),
+    img varchar2(300),
+    email varchar2(100),
+    bpw varchar2(30),
+    reg date default sysdate,
+    readcount number default 0
+);
+select * from imgboard;
+desc imgboard;
+--  이미지 게시판 시퀀스
+create sequence imgboard_seq nocache;
 
-
-
+-- 이미지 게시판 댓글 테이블
+create table imgreply(
+    rno number primary key,
+    reply varchar2(600) not null,
+    replyer varchar2(100),
+    replyReg date default sysdate,
+    bno number not null,
+    replyGrp number,
+    replyLevel number,
+    replyStep number
+);
+-- 이미지 게시판 댓글 시퀀스 생성
+create sequence imgreply_seq nocache;
+select * from imgreply;
+desc imgreply;
 
 
 

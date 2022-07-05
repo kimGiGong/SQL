@@ -27,3 +27,28 @@ create table tcomment (
 );
 create sequence tcomment_seq;
 
+create table tsign(
+    name varchar2(50),
+    id varchar2(50) primary key,
+    pw varchar2(50),
+    phone varchar2(50),
+    birth number (15),
+    profile varchar2(200),
+    reg date default sysdate
+);
+alter table tsign modify (birth varchar2(50));
+select * from tsign where id='123';
+
+create table tcontentboard (
+    bno number primary key,
+    subject varchar2(100),
+    writer varchar2(50),
+    content varchar2(2000),
+    bpw varchar2(50),
+    img varchar2(100),
+    readcount number default 0,
+    reg date default sysdate
+);
+create sequence tcontentboard_seq;
+
+select B.* from(select rownum r, A.* from (select * from tcontentboard order by bno desc) )A )B where r>=1 and r<=10;
